@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Attractions</title>
+
+    <style>
+        body {
+            transition: background-color 0.5s ease-in-out;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 14px;
+        }
+
+        .btn-custom {
+            background: #ff7eb3;
+            color: white;
+            border: none;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            background: #e0568f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏞️ Attractions</h1>
+        <div id="cards" class="row">
+            <!-- Cards will be loaded here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // เปลี่ยนสีพื้นหลังแบบสุ่ม
+        const colors = ['#f8f9fa', '#ffedd5', '#e0f7fa', '#f3e5f5'];
+        document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+        var cards = document.getElementById('cards');
+        cards.innerHTML = '<p class="text-center">Loading...</p>';
+
+        fetch("http://localhost/ALL/php/basic/api/attractions/read.php")
+            .then((response) => response.json())
+            .then((data) => {
+                cards.innerHTML = '';
+                data.forEach(attraction => {
+                    const card = `
+                    <div class="col-12 col-md-6 col-lg-4 mt-3">
+                        <div class="card">
+                            <img src="${attraction.coverimage}" class="card-img-top" alt="Attraction Image">
+                            <div class="card-body">
+                                <h5 class="card-title">${attraction.name}</h5>
+                                <p class="card-text">${attraction.detail.substring(0, 100)}...</p>
+                                <a href="attraction.html?id=${attraction.id}" class="btn btn-custom">See More</a>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    cards.insertAdjacentHTML('beforeend', card);
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                cards.innerHTML = '<p class="text-danger text-center">Failed to load data.</p>';
+            });
+    </script>
+</body>
+
+</html>
